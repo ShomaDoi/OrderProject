@@ -14,7 +14,7 @@ export default function Meal({ meal }) {
           </p>
         </div>
         <div className="meal-item-action">
-          <Button isTextOnly>Add To Cart</Button>
+          <Button >Add To Cart</Button>
         </div>
       </article>
     </li>

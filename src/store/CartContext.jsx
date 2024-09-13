@@ -1,5 +1,5 @@
 import { createContext } from "react";
-
+import { useReducer } from "react";
 const CartContext = createContext({
   items: [],
   addItem: (item) => {},
@@ -8,17 +8,17 @@ const CartContext = createContext({
 
 function cartReducer(state, action) {
   if (action.type === "ADD_ITEM") {
-    const exsistingCartItemIndex = state.items.findIndex(
+    const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
     );
 
     const updatedItems = [...state.items];
     if (existingCartItemIndex > -1) {
       const updatedItem = {
-        ...state.items[exsistingCartItemIndex],
-        quantity: state.items[exsistingCartItemIndex].quantity + 1,
+        ...state.items[existingCartItemIndex],
+        quantity: state.items[existingCartItemIndex].quantity + 1,
       };
-      updatedItems[exsistingCartItemIndex] = updatedItem;
+      updatedItems[existingCartItemIndex] = updatedItem;
     } else {
       updatedItems.push({ ...action.item, quantity: 1 });
     }
@@ -27,10 +27,10 @@ function cartReducer(state, action) {
   }
 
   if (action.type === "REMOVE_ITEM") {
-    const exsistingCartItemIndex = state.items.findIndex(
+    const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.id
     );
-    const existingCartItem = state.items[exsistingCartItemIndex];
+    const existingCartItem = state.items[existingCartItemIndex];
 
     const updatedItems = [...state.items];
     if (existingCartItem.quantity === 1) {
@@ -55,7 +55,7 @@ export function CartContextProvider({ children }) {
   const cartContext = {
     items: cartState.items,
     addItem,
-    removeItem
+    removeItem,
   };
 
   function addItem(item) {
@@ -65,8 +65,10 @@ export function CartContextProvider({ children }) {
   function removeItem(id) {
     dispatchCart({ type: "REMOVE_ITEM", id });
   }
+
+  console.log(cartContext);
   return (
-    <CartContext.Provider value={cartContext} >{children} </CartContext.Provider>
+    <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
   );
 }
 

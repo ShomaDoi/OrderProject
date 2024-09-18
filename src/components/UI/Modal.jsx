@@ -6,6 +6,8 @@ export default function Modal({ children, open, className = "" }) {
   useEffect(() => {
     if (open) {
       dialog.current.showModal();
+    } else {
+      dialog.current.close();
     }
   }, [open]);
 

@@ -13,7 +13,7 @@ export function UserContextProvider({ children }) {
   }
 
   function hide() {
-    setShowWindow('');
+    setShowWindow("");
   }
 
   const userCtx = {

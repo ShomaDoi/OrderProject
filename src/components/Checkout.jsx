@@ -16,20 +16,44 @@ export default function Checkout() {
     userCtx.hide();
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    /*Getting input values and validating them*/
+    const formData = new FormData(event.target);
+    const orderData = Object.fromEntries(formData.entries());
+
+    /*POSTing data*/
+    fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        order: {
+          items: cartCtx.items,
+          customer: orderData,
+        },
+      }),
+    });
+  }
   return (
-    <Modal className="checkout" open={userCtx.progress === "checkout"} onClose={handleCloseCheckout}>
-      <form>
+    <Modal
+      className="checkout"
+      open={userCtx.progress === "checkout"}
+      onClose={handleCloseCheckout}
+    >
+      <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total: {currencyFormmater.format(totalCost)}</p>
-        <Input label="Full Name" type="text" id="full-name" />
+        <Input label="Full Name" type="text" id="name" />
         <Input label="Email" type="email" id="email" />
-        <Input label="Street Address" type="text" id="street-address" />
+        <Input label="Street" type="text" id="street" />
         <div className="control-row">
           <Input label="Postal Code" type="number" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
         <p className="modal-actions">
-          <Button type="button" isTextOnly onClick={handleCloseCheckout}>  
+          <Button type="button" isTextOnly onClick={handleCloseCheckout}>
             Close
           </Button>
           <Button>Submit Order</Button>

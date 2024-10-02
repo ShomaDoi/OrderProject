@@ -5,15 +5,18 @@ import Input from "./UI/Input";
 import UserContext from "../store/UserContext";
 import { currencyFormmater } from "../utils/format";
 import Button from "./UI/Button";
+import useHttp from "../hooks/useHttp";
 export default function Checkout() {
   const userCtx = useContext(UserContext);
   const cartCtx = useContext(CartContext);
+  const { data, isLoading, error, sendRequest } = useHttp();
   const totalCost = cartCtx.items.reduce(
     (totalCost, item) => totalCost + item.quantity * item.price,
     0
   );
   function handleCloseCheckout() {
     userCtx.hide();
+    cartCtx.clearCart();
   }
 
   function handleSubmit(event) {
@@ -23,7 +26,7 @@ export default function Checkout() {
     const orderData = Object.fromEntries(formData.entries());
 
     /*POSTing data*/
-    fetch("http://localhost:3000/orders", {
+    sendRequest("http://localhost:3000/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,7 +38,47 @@ export default function Checkout() {
         },
       }),
     });
+
+    /*fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        order: {
+          items: cartCtx.items,
+          customer: orderData,
+        },
+      }),
+    });*/
   }
+  let actions = (
+    <>
+      <Button type="button" isTextOnly onClick={handleCloseCheckout}>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
+  );
+  if (error) {
+    actions = <span className="center">failed to submit,{error}</span>;
+  } else if (isLoading) {
+    actions = <span className="center">processing orders...</span>;
+  } else if (data && !error) {
+    actions = (
+      <Modal
+        className="checkout"
+        open={userCtx.progress === "checkout"}
+        onClose={handleCloseCheckout}
+      >
+        <p>Your order has been submited!</p>
+        <Button type="button" isTextOnly onClick={handleCloseCheckout}>
+          Close
+        </Button>
+      </Modal>
+    );
+  }
+
   return (
     <Modal
       className="checkout"
@@ -52,12 +95,8 @@ export default function Checkout() {
           <Input label="Postal Code" type="number" id="postal-code" />
           <Input label="City" type="text" id="city" />
         </div>
-        <p className="modal-actions">
-          <Button type="button" isTextOnly onClick={handleCloseCheckout}>
-            Close
-          </Button>
-          <Button>Submit Order</Button>
-        </p>
+
+        <p className="modal-actions">{actions}</p>
       </form>
     </Modal>
   );

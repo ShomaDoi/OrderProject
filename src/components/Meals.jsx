@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Meal from "./Meal";
 import useHttp from "../hooks/useHttp";
@@ -6,11 +5,11 @@ export default function Meals() {
   const { data: loadedMeals, isLoading, error, sendRequest } = useHttp();
   console.log(loadedMeals);
   useEffect(() => {
-    sendRequest("http://localhost:3000/meals",{});
+    sendRequest("http://localhost:3000/meals", {});
   }, []);
   console.log(!loadedMeals);
-  if (!loadedMeals ) {
-    return <p>Loading meals...</p>;
+  if (!loadedMeals) {
+    return <p className="center">Loading meals...</p>;
   }
   return (
     <div>

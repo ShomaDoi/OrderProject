@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 async function sendHttpRequst(url, config) {
-  fetch(url, config);
   const response = await fetch(url, config);
 
   if (!response.ok) {
@@ -16,6 +15,9 @@ export default function useHttp() {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState();
+  function clearData() {
+    setData();
+  }
   async function sendRequest(url, config) {
     setIsLoading(true);
     try {
@@ -33,5 +35,6 @@ export default function useHttp() {
     isLoading,
     error,
     sendRequest,
+    clearData,
   };
 }

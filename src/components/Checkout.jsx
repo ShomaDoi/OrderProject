@@ -9,7 +9,7 @@ import useHttp from "../hooks/useHttp";
 export default function Checkout() {
   const userCtx = useContext(UserContext);
   const cartCtx = useContext(CartContext);
-  const { data, isLoading, error, sendRequest } = useHttp();
+  const { data, isLoading, error, sendRequest, clearData } = useHttp();
   const totalCost = cartCtx.items.reduce(
     (totalCost, item) => totalCost + item.quantity * item.price,
     0
@@ -17,6 +17,7 @@ export default function Checkout() {
   function handleCloseCheckout() {
     userCtx.hide();
     cartCtx.clearCart();
+    clearData();
   }
 
   function handleSubmit(event) {
@@ -38,6 +39,7 @@ export default function Checkout() {
         },
       }),
     });
+    
 
     /*fetch("http://localhost:3000/orders", {
       method: "POST",
@@ -61,10 +63,13 @@ export default function Checkout() {
     </>
   );
   if (error) {
+    console.log("kuraccc");
     actions = <span className="center">failed to submit,{error}</span>;
   } else if (isLoading) {
+    console.log("kuracc");
     actions = <span className="center">processing orders...</span>;
   } else if (data && !error) {
+    console.log("kurac");
     actions = (
       <Modal
         className="checkout"
@@ -78,6 +83,7 @@ export default function Checkout() {
       </Modal>
     );
   }
+  console.log(data);
 
   return (
     <Modal
